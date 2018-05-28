@@ -29,6 +29,16 @@ var IndecisionApp = function (_React$Component) {
   }
 
   _createClass(IndecisionApp, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      console.log('He did');
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      console.log('has been updated');
+    }
+  }, {
     key: 'hendleRemove',
     value: function hendleRemove() {
       this.setState(function () {
@@ -60,9 +70,12 @@ var IndecisionApp = function (_React$Component) {
   }, {
     key: 'removeOne',
     value: function removeOne(option) {
-      console.log('that has been called', option);
       this.setState(function (prevState) {
-        return {};
+        return {
+          options: prevState.options.filter(function (opt) {
+            return option !== opt;
+          })
+        };
       });
     }
   }, {
@@ -170,10 +183,13 @@ var Option = function Option(props) {
       'li',
       null,
       props.text,
-      ' ',
       React.createElement(
         'button',
-        { onClick: props.removeOne },
+        {
+          onClick: function onClick() {
+            return props.removeOne(props.text);
+          }
+        },
         'Remove'
       )
     )

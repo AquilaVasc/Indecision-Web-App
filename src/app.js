@@ -11,6 +11,13 @@ class IndecisionApp extends React.Component{
     this.addToOptions = this.addToOptions.bind(this);
     this.removeOne = this.removeOne.bind(this);
   }
+  componentDidMount(){
+    console.log('He did');
+  }
+  componentDidUpdate(){
+    console.log('has been updated')
+  }
+
   hendleRemove(){
     this.setState(() => ({options: []}));
   }
@@ -30,8 +37,13 @@ class IndecisionApp extends React.Component{
     this.setState((prevState) => ({options: prevState.options.concat([option])}))
   }
   removeOne(option){
-    console.log('that has been called', option);
-    this.setState((prevState) => ({}))
+    this.setState((prevState) => {
+      return {
+        options : prevState.options.filter((opt)=>{
+          return option !== opt;
+        })
+      }
+    });
   }
   render(){
     const subititle = 'Put your life in the hands of a computer';
@@ -106,7 +118,16 @@ const Options = (props) =>{
 const Option = (props) => {
     return (
       <div>
-        <li>{props.text} <button onClick={props.removeOne}>Remove</button></li>
+        <li>
+          {props.text} 
+          <button 
+            onClick={() =>
+              props.removeOne(props.text)
+            }  
+          >
+            Remove
+          </button>
+        </li>
       </div>
     );
 };
