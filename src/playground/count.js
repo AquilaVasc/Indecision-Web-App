@@ -5,9 +5,23 @@ class Counter extends React.Component{
         this.hendlePlusOne = this.hendlePlusOne.bind(this);
         this.hendleReset = this.hendleReset.bind(this);
         this.state = {
-            count: props.count
+            count: 0
         }
     }
+
+    componentDidMount(){
+        const count = parseInt(localStorage.getItem('count'), 10);
+        if(count){
+            this.setState(() =>({count}))
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if(prevState.count !== this.state.count){
+            localStorage.setItem('count', JSON.stringify(this.state.count));
+        }
+    }
+
     hendlePlusOne(){
         this.setState((prevState) =>{
             return {
@@ -18,7 +32,7 @@ class Counter extends React.Component{
     hendleMinusOne(){
         this.setState((prevState) => {
             return {
-                count: prevState.count -= 1
+                count: prevState.count - 1
             }
         });
     }
@@ -43,11 +57,7 @@ class Counter extends React.Component{
     }
 }
 
-Counter.defaultProps = {
-    count: 0
-}
-
-ReactDOM.render(<Counter count={3} />, document.getElementById('app'));
+ReactDOM.render(<Counter />, document.getElementById('app'));
 // let count = 0;
 // const addOne = () =>{
 //     count++;

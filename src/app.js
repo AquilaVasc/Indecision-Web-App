@@ -4,7 +4,7 @@ class IndecisionApp extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      options: props.options
+      options: []
     }
     this.hendleRemove = this.hendleRemove.bind(this);
     this.choose = this.choose.bind(this);
@@ -12,11 +12,25 @@ class IndecisionApp extends React.Component{
     this.removeOne = this.removeOne.bind(this);
   }
   componentDidMount(){
-    console.log('He did');
+    try{
+      const json = localStorage.getItem('options');
+      const options = JSON.parse(json);
+      if(options){
+      this.setState(()=> ({options}))
+      }
+    }catch(e){
+    }
   }
-  componentDidUpdate(){
-    console.log('has been updated')
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.options.length !== this.state.options.length){
+      const json = JSON.stringify(this.state.options);
+      localStorage.setItem('options', json);
+    }
   }
+  componentWillUnmount(){
+    console.log('has gone')
+  }
+
 
   hendleRemove(){
     this.setState(() => ({options: []}));
@@ -101,7 +115,7 @@ const Options = (props) =>{
   return(
     <div>
       <button onClick={props.remove}>Remove All</button>
-      {props.options.length > 0 && <p>Here are your options: </p>}
+      {props.options.length === 0 && <p>Please add an option to get started</p>}
       <ol>
         {props.options.map((option) =>
         <Option 
