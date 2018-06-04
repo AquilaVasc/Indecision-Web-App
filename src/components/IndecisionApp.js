@@ -3,18 +3,45 @@ import AddOption from './AddOption.js';
 import Options from './Options';
 import Header from './Header';
 import Action from './Action';
+import OptionModal from './OptionModal';
 
 export default class IndecisionApp extends React.Component{ 
-  constructor(props){
-    super(props);
-    this.state = {
-      options: []
-    }
-    this.hendleRemove = this.hendleRemove.bind(this);
-    this.choose = this.choose.bind(this);
-    this.addToOptions = this.addToOptions.bind(this);
-    this.removeOne = this.removeOne.bind(this);
+  state = {
+    options: [],
+    selectedOption: undefined
   }
+  hendleRemove = () =>{
+    this.setState(() => ({options: []}));
+  };
+  choose = () => {
+    const randomInt = () => {
+      return Math.floor(Math.random() * this.state.options.length);
+    }
+    const option = (this.state.options[randomInt()]);
+    this.setState(() => ({selectedOption: option}));
+  };
+
+  addToOptions = (option) => {
+    if(!option){
+      return 'empty'
+    }else if(this.state.options.indexOf(option) > -1){
+      return 'alredy exists'
+    }
+    this.setState((prevState) => ({options: prevState.options.concat([option])}))
+  };
+  removeOne = (option) =>{
+    this.setState((prevState) => {
+      return {
+        options : prevState.options.filter((opt)=>{
+          return option !== opt;
+        })
+      }
+    });
+  };
+  closeModal = () =>{
+    this.setState(() => ({selectedOption: undefined}));
+  }
+
   componentDidMount(){
     try{
       const json = localStorage.getItem('options');
@@ -36,33 +63,7 @@ export default class IndecisionApp extends React.Component{
   }
 
 
-  hendleRemove(){
-    this.setState(() => ({options: []}));
-  }
-  choose(){
-    const randomInt = () => {
-      return Math.floor(Math.random() * this.state.options.length);
-    }
-    alert(this.state.options[randomInt()]);
-  }
 
-  addToOptions(option){
-    if(!option){
-      return 'empty'
-    }else if(this.state.options.indexOf(option) > -1){
-      return 'alredy exists'
-    }
-    this.setState((prevState) => ({options: prevState.options.concat([option])}))
-  }
-  removeOne(option){
-    this.setState((prevState) => {
-      return {
-        options : prevState.options.filter((opt)=>{
-          return option !== opt;
-        })
-      }
-    });
-  }
   render(){
     const subititle = 'Put your life in the hands of a computer';
     return(
@@ -80,6 +81,10 @@ export default class IndecisionApp extends React.Component{
           removeOne={this.removeOne}
         />
         <AddOption add={this.addToOptions}/>
+        <OptionModal 
+          closeModal={this.closeModal}
+          option={this.state.selectedOption}
+        />
       </div>
     );
   }
